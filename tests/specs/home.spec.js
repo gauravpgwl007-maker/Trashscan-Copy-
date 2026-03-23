@@ -2,6 +2,7 @@
 
 const HomeScreen = require('../pageobjects/home.screen');
 
+
 describe('Home Screen Functionality', () => {
 
     it('should handle Clock In if available', async () => {

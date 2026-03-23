@@ -41,6 +41,18 @@ class HomeScreen {
     }
 
     // === Actions (use methods instead of getters) ===
+   async ClockIn() {
+    const clockIn = await this.clockInBtn();
+    await clockIn.waitForDisplayed({ timeout: 5000 });
+    console.log('📊 ClockIn clicked');
+    await clockIn.click();
+    }
+   async ClockOut() {
+    const clockOut = await this.clockOutBtn();
+    await clockOut.waitForDisplayed({ timeout: 5000 });
+    console.log('📉 ClockOut clicked');
+    await clockOut.click();
+    }
     async openWorkProgress() {
         await this.workProgressTile().waitForDisplayed({ timeout: 5000 });
         console.log('📊 Opening Work Progress...');

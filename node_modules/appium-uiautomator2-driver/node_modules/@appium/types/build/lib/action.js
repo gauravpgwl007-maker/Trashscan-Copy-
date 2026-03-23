@@ -81,5 +81,5 @@ var Key;
     Key["R_ARROWDOWN"] = "\uE05B";
     Key["R_INSERT"] = "\uE05C";
     Key["R_DELETE"] = "\uE05D";
-})(Key || (exports.Key = Key = {}));
+})(Key = exports.Key || (exports.Key = {}));
 //# sourceMappingURL=action.js.map

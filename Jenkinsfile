@@ -104,13 +104,18 @@ pipeline {
         }
 
         cleanup {
-            bat '''
-            echo Cleaning up emulator...
+    bat '''
+    echo Cleaning up emulator...
 
-            adb devices
+    adb devices
 
-            adb -s emulator-5554 emu kill || exit 0
-            '''
-        }
+    for /f "tokens=1" %%i in ('adb devices ^| find "emulator"') do (
+        echo Killing %%i
+        adb -s %%i emu kill
+    )
+
+    exit 0
+    '''
+}
     }
 }

@@ -2,24 +2,22 @@ const HomeScreen = require('./home.screen');
 
 class NotificationsScreen {
 
-    // ==== Dashboard Notification Icon ====
-    get notificationIcon()  { return $('id=com.gwl.trashscan:id/notification_icon'); }
-    get notificationBadge() { return $('id=com.gwl.trashscan:id/notification_badge'); }
+    // ==== Notification Bell on Home Screen (source-verified: title_bar_right_menu) ====
+    get notificationIcon() { return $('id=com.gwl.trashscan:id/title_bar_right_menu'); }
 
-    // ==== Notification List Screen ====
+    // ==== Notification List Screen (source-verified from activity_notification_history.xml) ====
+    get notificationList()     { return $('id=com.gwl.trashscan:id/recyclerview_notification_history'); }
+    get emptyStateMsg()        { return $('id=com.gwl.trashscan:id/textViewNoRecords'); }
     get notificationListTitle(){ return $('android=new UiSelector().textContains("Notification")'); }
-    get notificationList()     { return $('id=com.gwl.trashscan:id/notificationRecycler'); }
-    get firstNotificationItem(){ return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/notificationItem").instance(0)'); }
-    get firstNotifTitle()      { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/notifTitle").instance(0)'); }
-    get firstNotifTimestamp()  { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/notifTimestamp").instance(0)'); }
-    get firstNotifUnreadDot()  { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/unreadDot").instance(0)'); }
-    get emptyStateMsg()        { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/emptyStateText")'); }
     get backBtn()              { return $('~Navigate up'); }
 
-    // ==== Notification Detail ====
-    get notifDetailTitle()   { return $('id=com.gwl.trashscan:id/notifDetailTitle'); }
-    get notifDetailBody()    { return $('id=com.gwl.trashscan:id/notifDetailBody'); }
-    get notifDetailTime()    { return $('id=com.gwl.trashscan:id/notifDetailTime'); }
+    // ==== Notification Row Items (from activity_notification_history_row.xml) ====
+    // Rows are CardViews inside the recyclerview; first item via instance(0)
+    get firstNotificationItem(){ return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/cardView").instance(0)'); }
+    get firstNotifTitle()      { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/title").instance(0)'); }
+    get firstNotifTimestamp()  { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/date").instance(0)'); }
+    // Unread dot — if the app uses it; fall back to false gracefully
+    get firstNotifUnreadDot()  { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/unreadDot").instance(0)'); }
 
     // ==== Open Notification Screen ====
     async openNotifications() {
@@ -33,18 +31,12 @@ class NotificationsScreen {
         }
     }
 
-    // ==== Wait for Notification List ====
+    // ==== Wait for Notification List to Load ====
     async waitForNotificationList() {
         await driver.waitUntil(
             async () => {
-                const selectors = [
-                    'com.gwl.trashscan:id/notificationRecycler',
-                    'com.gwl.trashscan:id/notificationItem',
-                    'com.gwl.trashscan:id/emptyStateText'
-                ];
-                for (const id of selectors) {
-                    if (await $(`id=${id}`).isDisplayed().catch(() => false)) return true;
-                }
+                if (await $('id=com.gwl.trashscan:id/recyclerview_notification_history').isDisplayed().catch(() => false)) return true;
+                if (await $('id=com.gwl.trashscan:id/textViewNoRecords').isDisplayed().catch(() => false)) return true;
                 if (await $('android=new UiSelector().textContains("Notification")').isDisplayed().catch(() => false)) return true;
                 return false;
             },
@@ -83,11 +75,15 @@ class NotificationsScreen {
         }
     }
 
-    // ==== Get Notification Count ====
+    // ==== Get Notification Badge Text (from home screen) ====
     async getNotificationBadgeText() {
         try {
-            await this.notificationBadge.waitForDisplayed({ timeout: 3000 });
-            return await this.notificationBadge.getText();
+            // The badge is a child of the notification button — try text-based approach
+            const badge = await $('android=new UiSelector().resourceId("com.gwl.trashscan:id/notification_badge")');
+            if (await badge.isDisplayed().catch(() => false)) {
+                return await badge.getText();
+            }
+            return null;
         } catch {
             return null;
         }

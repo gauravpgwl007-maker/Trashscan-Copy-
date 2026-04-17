@@ -4,11 +4,11 @@ class HomeScreen {
     get backButton()      { return $('~Navigate up'); }
     get manualBackArrow() { return $('id=com.gwl.trashscan:id/backArrow'); }
 
-    // ==== Clock Buttons ====
+    // ==== Clock Buttons (visibility="gone" in XML; shown by ViewModel) ====
     get clockInBtn()  { return $('id=com.gwl.trashscan:id/buttonClockIn'); }
     get clockOutBtn() { return $('id=com.gwl.trashscan:id/buttonClockOut'); }
 
-    // ==== Dashboard Tiles ====
+    // ==== Dashboard Tiles (always visible on home screen) ====
     get workProgressTile()  { return $('id=com.gwl.trashscan:id/ll_work_progress'); }
     get pickupTile()        { return $('id=com.gwl.trashscan:id/ivPickUp'); }
     get activityLogsTile()  { return $('id=com.gwl.trashscan:id/ivRollback'); }
@@ -16,99 +16,72 @@ class HomeScreen {
     get dailyWorkPlanTile() { return $('id=com.gwl.trashscan:id/ivAddSubs'); }
     get violationTile()     { return $('id=com.gwl.trashscan:id/ivViolation'); }
 
-    // ==== Header Icons ====
+    // ==== Header Icons (always visible) ====
     get hamburgerMenu()     { return $('id=com.gwl.trashscan:id/title_bar_left_menu'); }
-    get notificationIcon()  { return $('id=com.gwl.trashscan:id/notification_icon'); }
-    get notificationBadge() { return $('id=com.gwl.trashscan:id/notification_badge'); }
-
-    // ==== Violation Bottom Sheet Options ====
-    get violationManualOption()   { return $('id=com.gwl.trashscan:id/buttonManully'); }
-    get violationScanOption()     { return $('id=com.gwl.trashscan:id/buttonScan'); }
-    get violationQuickSnapOption(){ return $('id=com.gwl.trashscan:id/buttonQuickSnap'); }
+    get notificationIcon()  { return $('id=com.gwl.trashscan:id/title_bar_right_menu'); }
 
     // ==== Clock In/Out Actions ====
     async clockIn() {
         console.log('⏱ Performing Clock In...');
-        await this.clockInBtn.waitForDisplayed({ timeout: 5000 });
+        await this.clockInBtn.waitForDisplayed({ timeout: 15000 });
         await driver.pause(500);
         await this.clockInBtn.click();
-        console.log('✅ Clock In done');
+        console.log('✅ Clock In clicked — waiting for Clock Out button...');
+        // Wait up to 60s for the API to return and show the clockOut button
+        await this.clockOutBtn.waitForDisplayed({ timeout: 60000,
+            timeoutMsg: '❌ Clock Out button did not appear after Clock In (API may be slow)' });
+        console.log('✅ Clock In confirmed — Clock Out button visible');
     }
 
     async clockOut() {
         console.log('⏱ Performing Clock Out...');
-        await this.clockOutBtn.waitForDisplayed({ timeout: 5000 });
+        await this.clockOutBtn.waitForDisplayed({ timeout: 15000 });
         await this.clockOutBtn.click();
-        console.log('✅ Clock Out done');
+        console.log('✅ Clock Out clicked — waiting for Clock In button...');
+        await this.clockInBtn.waitForDisplayed({ timeout: 60000,
+            timeoutMsg: '❌ Clock In button did not appear after Clock Out (API may be slow)' });
+        console.log('✅ Clock Out confirmed — Clock In button visible');
     }
 
     // ==== Tile Navigation ====
     async openWorkProgress() {
-        await this.workProgressTile.waitForDisplayed({ timeout: 5000 });
+        await this.workProgressTile.waitForDisplayed({ timeout: 10000 });
         await this.workProgressTile.click();
         console.log('✅ Opened Work Progress');
     }
 
     async openPickup() {
-        await this.pickupTile.waitForDisplayed({ timeout: 5000 });
+        await this.pickupTile.waitForDisplayed({ timeout: 10000 });
         await this.pickupTile.click();
         console.log('✅ Opened Pickup');
     }
 
     async openActivityLogs() {
-        await this.activityLogsTile.waitForDisplayed({ timeout: 5000 });
+        await this.activityLogsTile.waitForDisplayed({ timeout: 10000 });
         await this.activityLogsTile.click();
         console.log('✅ Opened Activity Logs');
     }
 
     async openAddNotes() {
-        await this.addNotesTile.waitForDisplayed({ timeout: 5000 });
+        await this.addNotesTile.waitForDisplayed({ timeout: 10000 });
         await this.addNotesTile.click();
         console.log('✅ Opened Add Notes');
     }
 
     async openDailyWorkPlan() {
-        await this.dailyWorkPlanTile.waitForDisplayed({ timeout: 5000 });
+        await this.dailyWorkPlanTile.waitForDisplayed({ timeout: 10000 });
         await this.dailyWorkPlanTile.click();
         console.log('✅ Opened Daily Work Plan');
     }
 
     async openViolation() {
-        await this.violationTile.waitForDisplayed({ timeout: 5000 });
+        await this.violationTile.waitForDisplayed({ timeout: 10000 });
         await this.violationTile.click();
         console.log('✅ Opened Violation menu');
     }
 
-    async openViolationManual() {
-        await this.openViolation();
-        await this.violationManualOption.waitForDisplayed({ timeout: 5000 });
-        await this.violationManualOption.click();
-        console.log('✅ Opened Manual Violation');
-    }
-
-    async openViolationScanView() {
-        await this.openViolation();
-        await this.violationScanOption.waitForDisplayed({ timeout: 5000 });
-        await this.violationScanOption.click();
-        await driver.pause(1500);
-        await this.allowCameraPermissionIfPresent();
-        await this.backButton.waitForDisplayed({ timeout: 10000 });
-        await this.backButton.click();
-        await this.waitForHomeScreen();
-    }
-
-    async openViolationQuickSnap() {
-        await this.openViolation();
-        await this.violationQuickSnapOption.waitForDisplayed({ timeout: 5000 });
-        await this.violationQuickSnapOption.click();
-        await driver.pause(1500);
-        await this.allowCameraPermissionIfPresent();
-        await this.backButton.waitForDisplayed({ timeout: 10000 });
-        await this.backButton.click();
-        await this.waitForHomeScreen();
-    }
-
     // ==== Wait for Home Screen ====
+    // Uses tiles which are ALWAYS visible on the home fragment (no visibility="gone" in XML)
     async waitForHomeScreen() {
         console.log('🏠 Waiting for Home screen...');
 
@@ -118,9 +91,10 @@ class HomeScreen {
 
         await driver.waitUntil(
             async () => {
-                const ids = [
-                    'com.gwl.trashscan:id/buttonClockIn',
-                    'com.gwl.trashscan:id/buttonClockOut',
+                // title_bar_left_menu (hamburger) is always on home screen
+                if (await $('id=com.gwl.trashscan:id/title_bar_left_menu').isDisplayed().catch(() => false)) return true;
+                // Tiles — always visible on home screen
+                const tileIds = [
                     'com.gwl.trashscan:id/ll_work_progress',
                     'com.gwl.trashscan:id/ivPickUp',
                     'com.gwl.trashscan:id/ivRollback',
@@ -128,12 +102,15 @@ class HomeScreen {
                     'com.gwl.trashscan:id/ivAddSubs',
                     'com.gwl.trashscan:id/ivViolation',
                 ];
-                for (const id of ids) {
+                for (const id of tileIds) {
                     if (await $(`id=${id}`).isDisplayed().catch(() => false)) return true;
                 }
+                // Clock buttons — only one is visible at a time (after ViewModel responds)
+                if (await $('id=com.gwl.trashscan:id/buttonClockIn').isDisplayed().catch(() => false)) return true;
+                if (await $('id=com.gwl.trashscan:id/buttonClockOut').isDisplayed().catch(() => false)) return true;
                 return false;
             },
-            { timeout: 30000, timeoutMsg: '❌ Home screen did not load properly.' }
+            { timeout: 45000, timeoutMsg: '❌ Home screen did not load within 45s.' }
         );
 
         console.log('✅ Home screen loaded.');
@@ -192,7 +169,6 @@ class HomeScreen {
             }
             await driver.pause(1000);
         }
-        console.log('⚠️ No camera permission popup found');
         return false;
     }
 
@@ -212,7 +188,6 @@ class HomeScreen {
         return false;
     }
 
-    // ==== Screenshot ====
     async takeScreenshot(name) {
         const fileName = `./screenshots/${name}.png`;
         await driver.saveScreenshot(fileName);

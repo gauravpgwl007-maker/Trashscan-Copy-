@@ -2,33 +2,45 @@ const HomeScreen = require('./home.screen');
 
 class MessageBroadcastScreen {
 
-    // ==== Menu Entry ====
-    get menuButton()          { return $('id=com.gwl.trashscan:id/title_bar_left_menu'); }
-    get menuMessageBroadcast(){ return $('android=new UiSelector().text("Message Broadcast")'); }
+    // ==== Drawer Entry (source-verified: rl_message_boardcast — note typo in source) ====
+    get menuButton()           { return $('id=com.gwl.trashscan:id/title_bar_left_menu'); }
+    // Note: the Android source has a typo "boardcast" — this must match exactly
+    get menuMessageBroadcast() { return $('id=com.gwl.trashscan:id/rl_message_boardcast'); }
 
-    // ==== Message Broadcast Screen ====
-    get broadcastTitle()       { return $('android=new UiSelector().textContains("Message Broadcast")'); }
-    get userListDropdown()     { return $('id=com.gwl.trashscan:id/userListDropdown'); }
-    get userSearchInput()      { return $('id=com.gwl.trashscan:id/userSearchInput'); }
-    get selectAllOption()      { return $('android=new UiSelector().text("Select All")'); }
-    get firstUserCheckbox()    { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/userCheckbox").instance(0)'); }
-    get secondUserCheckbox()   { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/userCheckbox").instance(1)'); }
-    get userDoneBtn()          { return $('id=com.gwl.trashscan:id/doneBtn'); }
-    get selectedUsersCount()   { return $('id=com.gwl.trashscan:id/selectedUsersCount'); }
+    // ==== Message Broadcast Screen (source-verified from fragment_message_board_cast.xml) ====
+    get broadcastTitle()      { return $('android=new UiSelector().textContains("Message")'); }
+    // Property dropdown (disabled in XML — not tappable by default in this fragment)
+    get propertyDropdown()    { return $('id=com.gwl.trashscan:id/tv_select_property'); }
+    // Members/User list dropdown trigger
+    get userListDropdown()    { return $('id=com.gwl.trashscan:id/tv_select_members'); }
+    // Title input (maxLength=50 in source)
+    get messageTitleField()   { return $('id=com.gwl.trashscan:id/et_title_description'); }
+    // Description/Message input (maxLength=250 in source)
+    get messageDescField()    { return $('id=com.gwl.trashscan:id/et_message_description'); }
+    // Send button (TextView styled as button, text="SEND")
+    get sendBtn()             { return $('id=com.gwl.trashscan:id/text_done'); }
 
-    get messageTitleField()    { return $('id=com.gwl.trashscan:id/messageTitle'); }
-    get messageDescField()     { return $('id=com.gwl.trashscan:id/messageDescription'); }
-    get sendBtn()              { return $('id=com.gwl.trashscan:id/btnSendBroadcast'); }
+    // ==== Custom List Dialog (source-verified from custom_list_dialog.xml) ====
+    // Shown when tv_select_members is tapped
+    get userSearchInput()    { return $('id=com.gwl.trashscan:id/searchEditText'); }
+    get userListRecycler()   { return $('id=com.gwl.trashscan:id/recyclerViewLocation'); }
+    get userDoneBtn()        { return $('id=com.gwl.trashscan:id/doneBtn'); }
+    get userCancelBtn()      { return $('id=com.gwl.trashscan:id/cancelBtn'); }
+    get userNoRecord()       { return $('id=com.gwl.trashscan:id/tv_noRecord'); }
 
-    // ==== Validation / Feedback ====
-    get validationError()      { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/validationError")'); }
-    get successMsg()           { return $('android=new UiSelector().textContains("success")'); }
-    get errorNetworkMsg()      { return $('android=new UiSelector().textContains("internet")'); }
-    get confirmationPopup()    { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/confirmDialog")'); }
-    get confirmYesBtn()        { return $('android=new UiSelector().text("Yes")'); }
-    get confirmCancelBtn()     { return $('android=new UiSelector().text("Cancel")'); }
+    // ==== User List Item (source-verified from item_custom_dialog.xml) ====
+    // Each row has playerCB (AppCompatCheckBox) and itemName (TextView)
+    get firstUserCheckbox()  { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(0)'); }
+    get secondUserCheckbox() { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(1)'); }
+    get firstUserName()      { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/itemName").instance(0)'); }
 
+    // ==== Confirmation / Feedback ====
+    get confirmYesBtn()  { return $('android=new UiSelector().text("Yes")'); }
+    get confirmNoBtn()   { return $('android=new UiSelector().text("No")'); }
+
+    // ================================================================
     // ==== Open Message Broadcast from Drawer ====
+    // ================================================================
     async openFromDrawer() {
         try {
             await this.menuButton.waitForDisplayed({ timeout: 5000 });
@@ -43,20 +55,16 @@ class MessageBroadcastScreen {
         }
     }
 
+    // ================================================================
     // ==== Wait for Broadcast Screen ====
+    // ================================================================
     async waitForBroadcastScreen() {
         await driver.waitUntil(
             async () => {
-                const selectors = [
-                    'com.gwl.trashscan:id/messageTitle',
-                    'com.gwl.trashscan:id/messageDescription',
-                    'com.gwl.trashscan:id/btnSendBroadcast',
-                    'com.gwl.trashscan:id/userListDropdown'
-                ];
-                for (const id of selectors) {
-                    if (await $(`id=${id}`).isDisplayed().catch(() => false)) return true;
-                }
-                if (await $('android=new UiSelector().textContains("Message Broadcast")').isDisplayed().catch(() => false)) return true;
+                if (await $('id=com.gwl.trashscan:id/et_title_description').isDisplayed().catch(() => false)) return true;
+                if (await $('id=com.gwl.trashscan:id/et_message_description').isDisplayed().catch(() => false)) return true;
+                if (await $('id=com.gwl.trashscan:id/tv_select_members').isDisplayed().catch(() => false)) return true;
+                if (await $('id=com.gwl.trashscan:id/text_done').isDisplayed().catch(() => false)) return true;
                 return false;
             },
             { timeout: 15000, timeoutMsg: '❌ Message Broadcast screen did not load.' }
@@ -64,7 +72,9 @@ class MessageBroadcastScreen {
         console.log('✅ Message Broadcast screen loaded');
     }
 
-    // ==== Open User List ====
+    // ================================================================
+    // ==== User Selection ====
+    // ================================================================
     async openUserListDropdown() {
         try {
             await this.userListDropdown.waitForDisplayed({ timeout: 5000 });
@@ -76,7 +86,6 @@ class MessageBroadcastScreen {
         }
     }
 
-    // ==== Search User ====
     async searchUser(name) {
         try {
             await this.userSearchInput.waitForDisplayed({ timeout: 5000 });
@@ -88,7 +97,6 @@ class MessageBroadcastScreen {
         }
     }
 
-    // ==== Select First User ====
     async selectFirstUser() {
         try {
             await this.firstUserCheckbox.waitForDisplayed({ timeout: 5000 });
@@ -99,11 +107,10 @@ class MessageBroadcastScreen {
         }
     }
 
-    // ==== Select Multiple Users ====
     async selectMultipleUsers(count = 2) {
         for (let i = 0; i < count; i++) {
             try {
-                const checkbox = await $(`android=new UiSelector().resourceId("com.gwl.trashscan:id/userCheckbox").instance(${i})`);
+                const checkbox = await $(`android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(${i})`);
                 if (await checkbox.isDisplayed().catch(() => false)) {
                     await checkbox.click();
                     console.log(`✅ User ${i + 1} selected`);
@@ -114,21 +121,16 @@ class MessageBroadcastScreen {
         }
     }
 
-    // ==== Deselect First User ====
     async deselectFirstUser() {
         try {
             await this.firstUserCheckbox.waitForDisplayed({ timeout: 5000 });
-            const isChecked = await this.firstUserCheckbox.isSelected().catch(() => false);
-            if (isChecked) {
-                await this.firstUserCheckbox.click();
-                console.log('✅ First user deselected');
-            }
+            await this.firstUserCheckbox.click();
+            console.log('✅ First user deselected');
         } catch {
             console.log('⚠️ Could not deselect user');
         }
     }
 
-    // ==== Tap Done on User Selection ====
     async tapUserDone() {
         try {
             await this.userDoneBtn.waitForDisplayed({ timeout: 5000 });
@@ -140,10 +142,13 @@ class MessageBroadcastScreen {
         }
     }
 
-    // ==== Enter Message Title ====
+    // ================================================================
+    // ==== Title and Description ====
+    // ================================================================
     async enterTitle(title) {
         try {
             await this.messageTitleField.waitForDisplayed({ timeout: 5000 });
+            await this.messageTitleField.clearValue();
             await this.messageTitleField.setValue(title);
             console.log(`✅ Title entered: "${title}"`);
         } catch {
@@ -151,18 +156,20 @@ class MessageBroadcastScreen {
         }
     }
 
-    // ==== Enter Message Description ====
     async enterDescription(desc) {
         try {
             await this.messageDescField.waitForDisplayed({ timeout: 5000 });
+            await this.messageDescField.clearValue();
             await this.messageDescField.setValue(desc);
-            console.log(`✅ Description entered`);
+            console.log('✅ Description entered');
         } catch {
             console.log('⚠️ Description field not found');
         }
     }
 
-    // ==== Tap Send ====
+    // ================================================================
+    // ==== Send ====
+    // ================================================================
     async tapSend() {
         try {
             await this.sendBtn.waitForDisplayed({ timeout: 5000 });
@@ -174,7 +181,6 @@ class MessageBroadcastScreen {
         }
     }
 
-    // ==== Confirm Send (if popup) ====
     async confirmSend() {
         try {
             await this.confirmYesBtn.waitForDisplayed({ timeout: 5000 });
@@ -184,25 +190,37 @@ class MessageBroadcastScreen {
         } catch {}
     }
 
-    // ==== Check Validation Displayed ====
+    // ================================================================
+    // ==== Validation / Success ====
+    // ================================================================
     async isValidationVisible() {
         try {
-            return await this.validationError.isDisplayed();
+            // Look for any toast or inline validation message
+            const toast = await $('android=new UiSelector().textContains("required")');
+            if (await toast.isDisplayed().catch(() => false)) return true;
+            const toast2 = await $('android=new UiSelector().textContains("select")');
+            if (await toast2.isDisplayed().catch(() => false)) return true;
+            return false;
         } catch {
             return false;
         }
     }
 
-    // ==== Check Success Message ====
     async isSuccessMessageVisible() {
         try {
-            return await this.successMsg.isDisplayed();
+            const toast = await $('android=new UiSelector().textContains("sent")');
+            if (await toast.isDisplayed().catch(() => false)) return true;
+            const toast2 = await $('android=new UiSelector().textContains("success")');
+            if (await toast2.isDisplayed().catch(() => false)) return true;
+            return false;
         } catch {
             return false;
         }
     }
 
+    // ================================================================
     // ==== Back to Home ====
+    // ================================================================
     async backToHome() {
         try {
             const back = await $('~Navigate up');

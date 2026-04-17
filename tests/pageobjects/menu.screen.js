@@ -1,50 +1,23 @@
 class MenuScreen {
 
     // ==== Drawer Open Button ====
-    get menuButton() {
-        return $('id=com.gwl.trashscan:id/title_bar_left_menu');
-    }
+    get menuButton() { return $('id=com.gwl.trashscan:id/title_bar_left_menu'); }
 
-    // ==== Drawer Menu Item Selectors ====
-    get menuHome() {
-        return $('android=new UiSelector().text("Home")');
-    }
-
-    get menuProfile() {
-        return $('android=new UiSelector().text("Profile")');
-    }
-
-    get menuActivate() {
-        return $('android=new UiSelector().text("Activate")');
-    }
-
-    get menuPendingViolation() {
-        return $('android=new UiSelector().text("Pending Violation")');
-    }
-
-    get menuLaunchTutorials() {
-        return $('android=new UiSelector().text("Launch Tutorials")');
-    }
-
-    get menuReportIssue() {
-        return $('android=new UiSelector().text("Report Issue")');
-    }
-
-    get menuUpdateLocation() {
-        return $('android=new UiSelector().text("Update Location")');
-    }
-
-    get menuChangeLanguage() {
-        return $('android=new UiSelector().text("Change Language")');
-    }
-
-    get menuForceCheckout() {
-        return $('android=new UiSelector().text("Force Checkout")');
-    }
-
-    get menuLogout() {
-        return $('android=new UiSelector().text("Logout")');
-    }
+    // ==== Drawer Menu Items (source-verified from view_menu_left.xml — RelativeLayout IDs) ====
+    get menuHome()            { return $('id=com.gwl.trashscan:id/home'); }
+    get menuProfile()         { return $('id=com.gwl.trashscan:id/profile'); }
+    get menuActivate()        { return $('id=com.gwl.trashscan:id/activateLayout'); }
+    get menuPendingViolation(){ return $('id=com.gwl.trashscan:id/rl_pending_violation'); }
+    get menuLaunchTutorials() { return $('id=com.gwl.trashscan:id/play_intro'); }
+    get menuReportIssue()     { return $('id=com.gwl.trashscan:id/report_issue'); }
+    get menuUpdateLocation()  { return $('id=com.gwl.trashscan:id/update_location'); }
+    get menuChangeLanguage()  { return $('id=com.gwl.trashscan:id/change_language'); }
+    get menuForceCheckout()   { return $('id=com.gwl.trashscan:id/rl_force_checkout'); }
+    // Note: Android source has typo "boardcast" in the ID — must match exactly
+    get menuMessageBroadcast(){ return $('id=com.gwl.trashscan:id/rl_message_boardcast'); }
+    get menuCustomerSupport() { return $('id=com.gwl.trashscan:id/rl_customerSupport'); }
+    get menuPorterMap()       { return $('id=com.gwl.trashscan:id/porterMap'); }
+    get menuLogout()          { return $('id=com.gwl.trashscan:id/logout'); }
 
     // ==== Open Drawer ====
     async openDrawer() {
@@ -52,24 +25,24 @@ class MenuScreen {
             await this.menuButton.waitForDisplayed({ timeout: 5000 });
             await this.menuButton.click();
             console.log('📂 Drawer menu opened');
-            await driver.pause(1000);
+            await driver.pause(800);
         } catch (err) {
             console.log('⚠️ Could not open drawer via button, trying swipe...');
             const { width, height } = await driver.getWindowSize();
             await driver.action('pointer')
-                .move({ x: 0, y: height / 2 })
+                .move({ x: 5, y: height / 2 })
                 .down()
-                .move({ x: width * 0.4, y: height / 2 })
+                .move({ x: Math.floor(width * 0.4), y: height / 2 })
                 .up()
                 .perform();
-            await driver.pause(1000);
+            await driver.pause(800);
         }
     }
 
-    // ==== Return to Home via Menu (for screens without a back button) ====
+    // ==== Return to Home via Menu ====
     async returnViaMenu() {
-        console.log('🔁 No back button — returning to Home via drawer menu...');
-        await driver.pause(1000);
+        console.log('🔁 Returning to Home via drawer menu...');
+        await driver.pause(500);
         await this.openDrawer();
         await this.menuHome.waitForDisplayed({ timeout: 5000 });
         await this.menuHome.click();
@@ -77,7 +50,7 @@ class MenuScreen {
         await driver.pause(1000);
     }
 
-    // ==== Menu Actions ====
+    // ==== Menu Navigation Actions ====
     async goToHome() {
         await this.openDrawer();
         await this.menuHome.waitForDisplayed({ timeout: 5000 });
@@ -90,7 +63,6 @@ class MenuScreen {
         await this.menuProfile.waitForDisplayed({ timeout: 5000 });
         await this.menuProfile.click();
         console.log('👤 Navigated to Profile');
-        await this.returnViaMenu();
     }
 
     async goToActivate() {
@@ -105,7 +77,6 @@ class MenuScreen {
         await this.menuPendingViolation.waitForDisplayed({ timeout: 5000 });
         await this.menuPendingViolation.click();
         console.log('⚠️ Navigated to Pending Violation');
-        await this.returnViaMenu();
     }
 
     async goToLaunchTutorials() {
@@ -113,7 +84,6 @@ class MenuScreen {
         await this.menuLaunchTutorials.waitForDisplayed({ timeout: 5000 });
         await this.menuLaunchTutorials.click();
         console.log('📚 Navigated to Launch Tutorials');
-        await this.returnViaMenu();
     }
 
     async goToReportIssue() {
@@ -135,7 +105,6 @@ class MenuScreen {
         await this.menuChangeLanguage.waitForDisplayed({ timeout: 5000 });
         await this.menuChangeLanguage.click();
         console.log('🌐 Navigated to Change Language');
-        await this.returnViaMenu();
     }
 
     async goToForceCheckout() {
@@ -143,10 +112,14 @@ class MenuScreen {
         await this.menuForceCheckout.waitForDisplayed({ timeout: 5000 });
         await this.menuForceCheckout.click();
         console.log('🔄 Navigated to Force Checkout');
-        await this.returnViaMenu();
     }
 
-
+    async goToMessageBroadcast() {
+        await this.openDrawer();
+        await this.menuMessageBroadcast.waitForDisplayed({ timeout: 5000 });
+        await this.menuMessageBroadcast.click();
+        console.log('📢 Navigated to Message Broadcast');
+    }
 }
 
 module.exports = new MenuScreen();

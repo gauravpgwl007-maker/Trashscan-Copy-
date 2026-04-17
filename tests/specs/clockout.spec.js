@@ -11,12 +11,18 @@ describe('Clock Out', () => {
     it('should perform Clock Out if button is available', async () => {
         await HomeScreen.waitForHomeScreen();
 
-        if (await ClockOutScreen.clockOutBtn.isDisplayed().catch(() => false)) {
-            console.log('🕕 Performing Clock Out...');
-            await ClockOutScreen.clockOut();
-            await ClockScreen.clockInBtn.waitForDisplayed({ timeout: 5000 });
+        const clockOutVisible = await ClockOutScreen.clockOutBtn.isDisplayed().catch(() => false);
+        if (clockOutVisible) {
+            console.log('🕕 Clock Out button found, performing action...');
+            await ClockOutScreen.clockOutBtn.click();
+            // API call can take 10-30s — wait up to 60s for clockIn button to reappear
+            await ClockScreen.clockInBtn.waitForDisplayed({
+                timeout: 60000,
+                timeoutMsg: '❌ Clock In button did not appear after Clock Out. API may be slow or Clock Out failed.'
+            });
+            console.log('✅ Clock Out confirmed — Clock In button is now visible');
         } else {
-            console.log('⚠️ Clock Out button not found, skipping.');
+            console.log('⚠️ Clock Out button not visible — user may not be clocked in. Skipping.');
         }
     });
 });

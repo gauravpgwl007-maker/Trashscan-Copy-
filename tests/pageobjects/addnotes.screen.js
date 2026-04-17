@@ -5,54 +5,60 @@ class AddNotesScreen {
     // ==== Dashboard Tile ====
     get addNotesTile() { return $('id=com.gwl.trashscan:id/ivAddNotes'); }
 
-    // ==== Add Notes Screen ====
-    get addNotesFab()     { return $('id=com.gwl.trashscan:id/fabAddNote'); }
-    get notesList()       { return $('id=com.gwl.trashscan:id/notesRecycler'); }
-    get backArrow()       { return $('~Navigate up'); }
-    get screenTitle()     { return $('android=new UiSelector().textContains("Add Note")'); }
+    // ==== Notes List Screen (source-verified from activity_add_note.xml) ====
+    get notesList()  { return $('id=com.gwl.trashscan:id/recyclerview_addNotes'); }
+    get noDataText() { return $('id=com.gwl.trashscan:id/textViewNoData'); }
+    get backArrow()  { return $('~Navigate up'); }
+    get screenTitle(){ return $('android=new UiSelector().textContains("Note")'); }
 
-    // ==== Add Note Form ====
-    get propertyDropdown()  { return $('id=com.gwl.trashscan:id/propertyDropdown'); }
-    get propertySearch()    { return $('id=com.gwl.trashscan:id/propertySearchInput'); }
-    get propertyListItem()  { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(0)'); }
-    get doneBtnDropdown()   { return $('id=com.gwl.trashscan:id/doneBtn'); }
-    get cancelBtnDropdown() { return $('id=com.gwl.trashscan:id/cancelBtn'); }
+    // ==== Add Note Form (source-verified from dialog_add_note.xml) ====
+    // Property selector (TextView that opens custom_list_dialog)
+    get propertyDropdown()  { return $('id=com.gwl.trashscan:id/txt_property'); }
+    // Address fields
+    get addressLine1()      { return $('id=com.gwl.trashscan:id/editText_address1'); }
+    get addressLine2()      { return $('id=com.gwl.trashscan:id/editText_address_2'); }
+    get unitNumberField()   { return $('id=com.gwl.trashscan:id/editText_address_unit'); }
+    // Reason — AppCompatSpinner (NOT a custom dialog, select via click)
+    get reasonSpinner()     { return $('id=com.gwl.trashscan:id/spinner_reason'); }
+    // Note description
+    get noteDescField()     { return $('id=com.gwl.trashscan:id/editText_note_description'); }
+    // Add Photo — TextView styled as button (text="ADD PHOTO")
+    get addPhotoBtn()       { return $('id=com.gwl.trashscan:id/textview_title'); }
+    get noteImageView()     { return $('id=com.gwl.trashscan:id/imageview_notes'); }
+    // Form action buttons (TextViews styled as buttons)
+    get cancelBtn()         { return $('id=com.gwl.trashscan:id/text_cancel'); }
+    get saveDoneBtn()       { return $('id=com.gwl.trashscan:id/text_done'); }
 
-    get propertyAddressField() { return $('id=com.gwl.trashscan:id/propertyAddress'); }
-    get unitNumberField()      { return $('id=com.gwl.trashscan:id/unitNumber'); }
-    get reasonDropdown()       { return $('id=com.gwl.trashscan:id/reasonDropdown'); }
-    get reasonListItem()       { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(0)'); }
-    get addPhotoBtn()          { return $('id=com.gwl.trashscan:id/addPhotoBtn'); }
-    get cameraOption()         { return $('id=com.gwl.trashscan:id/txvCamera'); }
-    get galleryOption()        { return $('id=com.gwl.trashscan:id/txvGallery'); }
-    get cancelImageOption()    { return $('id=com.gwl.trashscan:id/txvCancel'); }
-    get captureBtn()           { return $('id=com.gwl.trashscan:id/captureButton'); }
-    get nextBtnCamera()        { return $('id=com.gwl.trashscan:id/nextTextView'); }
-    get doneBtnCamera()        { return $('id=com.gwl.trashscan:id/text_done'); }
-    get saveDoneBtn()          { return $('id=com.gwl.trashscan:id/btnSaveNote'); }
-    get validationMsg()        { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/validationMessage")'); }
+    // ==== Custom List Dialog (from custom_list_dialog.xml) ====
+    get dialogSearch()     { return $('id=com.gwl.trashscan:id/searchEditText'); }
+    get dialogRecycler()   { return $('id=com.gwl.trashscan:id/recyclerViewLocation'); }
+    get dialogDoneBtn()    { return $('id=com.gwl.trashscan:id/doneBtn'); }
+    get dialogCancelBtn()  { return $('id=com.gwl.trashscan:id/cancelBtn'); }
+    get dialogFirstItem()  { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(0)'); }
 
+    // ==== Camera / Gallery Options (system bottom sheet) ====
+    get cameraOption()     { return $('android=new UiSelector().text("Camera")'); }
+    get galleryOption()    { return $('android=new UiSelector().text("Gallery")'); }
+
+    // ================================================================
     // ==== Open Add Notes ====
+    // ================================================================
     async openAddNotes() {
-        await this.addNotesTile.waitForDisplayed({ timeout: 5000 });
+        await this.addNotesTile.waitForDisplayed({ timeout: 10000 });
         await this.addNotesTile.click();
         console.log('✅ Opened Add Notes');
         await driver.pause(1500);
     }
 
+    // ================================================================
     // ==== Wait for Add Notes Screen ====
+    // ================================================================
     async waitForAddNotesScreen() {
         await driver.waitUntil(
             async () => {
-                const selectors = [
-                    'com.gwl.trashscan:id/fabAddNote',
-                    'com.gwl.trashscan:id/notesRecycler',
-                    'com.gwl.trashscan:id/ivAddNotes'
-                ];
-                for (const id of selectors) {
-                    if (await $(`id=${id}`).isDisplayed().catch(() => false)) return true;
-                }
-                if (await $('android=new UiSelector().textContains("Add Note")').isDisplayed().catch(() => false)) return true;
+                if (await $('id=com.gwl.trashscan:id/recyclerview_addNotes').isDisplayed().catch(() => false)) return true;
+                if (await $('id=com.gwl.trashscan:id/textViewNoData').isDisplayed().catch(() => false)) return true;
+                if (await $('android=new UiSelector().textContains("Note")').isDisplayed().catch(() => false)) return true;
                 return false;
             },
             { timeout: 15000, timeoutMsg: '❌ Add Notes screen did not load.' }
@@ -60,19 +66,9 @@ class AddNotesScreen {
         console.log('✅ Add Notes screen loaded');
     }
 
-    // ==== Tap "+" to Open Add Note Form ====
-    async tapAddNoteFab() {
-        try {
-            await this.addNotesFab.waitForDisplayed({ timeout: 5000 });
-            await this.addNotesFab.click();
-            console.log('✅ Add Note FAB tapped');
-            await driver.pause(1000);
-        } catch {
-            console.log('⚠️ Add Note FAB not found');
-        }
-    }
-
+    // ================================================================
     // ==== Property Selection ====
+    // ================================================================
     async openPropertyDropdown() {
         await this.propertyDropdown.waitForDisplayed({ timeout: 5000 });
         await this.propertyDropdown.click();
@@ -82,8 +78,8 @@ class AddNotesScreen {
 
     async searchProperty(term) {
         try {
-            await this.propertySearch.waitForDisplayed({ timeout: 5000 });
-            await this.propertySearch.setValue(term);
+            await this.dialogSearch.waitForDisplayed({ timeout: 5000 });
+            await this.dialogSearch.setValue(term);
             console.log(`🔍 Searched property: "${term}"`);
             await driver.pause(1000);
         } catch {
@@ -93,33 +89,34 @@ class AddNotesScreen {
 
     async selectFirstProperty() {
         try {
-            await this.propertyListItem.waitForDisplayed({ timeout: 5000 });
-            await this.propertyListItem.click();
+            await this.dialogFirstItem.waitForDisplayed({ timeout: 5000 });
+            await this.dialogFirstItem.click();
             console.log('✅ First property selected');
         } catch {
             console.log('⚠️ Property list item not found');
         }
     }
 
-    async tapDoneDropdown() {
-        await this.doneBtnDropdown.waitForDisplayed({ timeout: 5000 });
-        await this.doneBtnDropdown.click();
-        console.log('✅ Done tapped on dropdown');
+    async tapDialogDone() {
+        await this.dialogDoneBtn.waitForDisplayed({ timeout: 5000 });
+        await this.dialogDoneBtn.click();
+        console.log('✅ Done tapped on dialog');
         await driver.pause(800);
     }
 
-    async tapCancelDropdown() {
+    async tapDialogCancel() {
         try {
-            await this.cancelBtnDropdown.waitForDisplayed({ timeout: 5000 });
-            await this.cancelBtnDropdown.click();
-            console.log('✅ Cancel tapped on dropdown');
+            await this.dialogCancelBtn.waitForDisplayed({ timeout: 5000 });
+            await this.dialogCancelBtn.click();
         } catch {
             await driver.back();
         }
         await driver.pause(800);
     }
 
+    // ================================================================
     // ==== Enter Unit Number ====
+    // ================================================================
     async enterUnitNumber(unit = '101') {
         try {
             await this.unitNumberField.waitForDisplayed({ timeout: 5000 });
@@ -130,68 +127,79 @@ class AddNotesScreen {
         }
     }
 
-    // ==== Select Reason ====
+    // ================================================================
+    // ==== Select Reason (AppCompatSpinner) ====
+    // ================================================================
     async selectReason() {
         try {
-            await this.reasonDropdown.waitForDisplayed({ timeout: 5000 });
-            await this.reasonDropdown.click();
-            await this.reasonListItem.waitForDisplayed({ timeout: 5000 });
-            await this.reasonListItem.click();
-            await this.tapDoneDropdown();
-            console.log('✅ Reason selected');
+            await this.reasonSpinner.waitForDisplayed({ timeout: 5000 });
+            await this.reasonSpinner.click();
+            await driver.pause(1000);
+            // After clicking the spinner, select the first item from the popup
+            const firstSpinnerItem = await $('android=new UiSelector().className("android.widget.CheckedTextView").instance(0)');
+            if (await firstSpinnerItem.isDisplayed().catch(() => false)) {
+                await firstSpinnerItem.click();
+                console.log('✅ Reason selected from spinner');
+            } else {
+                console.log('⚠️ Spinner items not visible');
+            }
         } catch {
-            console.log('⚠️ Reason dropdown not found');
+            console.log('⚠️ Reason spinner not found');
         }
     }
 
-    // ==== Add Photo via Camera ====
-    async addPhotoViaCamera() {
-        console.log('📷 Adding photo via camera...');
-        await this.addPhotoBtn.waitForDisplayed({ timeout: 5000 });
-        await this.addPhotoBtn.click();
-        await this.cameraOption.waitForDisplayed({ timeout: 5000 });
-        await this.cameraOption.click();
-        await HomeScreen.allowCameraPermissionIfPresent();
-        await this.captureBtn.waitForDisplayed({ timeout: 10000 });
-        await this.captureBtn.click();
-        await this.nextBtnCamera.waitForDisplayed({ timeout: 10000 });
-        await this.nextBtnCamera.click();
-        await this.doneBtnCamera.waitForDisplayed({ timeout: 10000 });
-        await this.doneBtnCamera.click();
-        console.log('✅ Photo added via camera');
-    }
-
-    // ==== Add Photo via Gallery ====
-    async addPhotoViaGallery() {
-        console.log('🖼️ Adding photo via gallery...');
-        await this.addPhotoBtn.waitForDisplayed({ timeout: 5000 });
-        await this.addPhotoBtn.click();
-        await this.galleryOption.waitForDisplayed({ timeout: 5000 });
-        await this.galleryOption.click();
-        await HomeScreen.allowMediaPermissionIfPresent();
-        // Select first image from gallery
-        const firstImage = await $('android=new UiSelector().resourceId("com.android.providers.media.documents:id/thumbnail").instance(0)');
-        if (await firstImage.isDisplayed().catch(() => false)) {
-            await firstImage.click();
+    // ================================================================
+    // ==== Enter Note Description ====
+    // ================================================================
+    async enterNoteDescription(text = 'Automation test note description') {
+        try {
+            await this.noteDescField.waitForDisplayed({ timeout: 5000 });
+            await this.noteDescField.setValue(text);
+            console.log('✅ Note description entered');
+        } catch {
+            console.log('⚠️ Note description field not found');
         }
-        console.log('✅ Photo added via gallery');
-        await driver.pause(1000);
     }
 
-    // ==== Cancel Photo Options ====
-    async cancelPhotoOptions() {
+    // ================================================================
+    // ==== Add Photo ====
+    // ================================================================
+    async tapAddPhoto() {
         try {
             await this.addPhotoBtn.waitForDisplayed({ timeout: 5000 });
             await this.addPhotoBtn.click();
-            await this.cancelImageOption.waitForDisplayed({ timeout: 5000 });
-            await this.cancelImageOption.click();
-            console.log('✅ Photo options cancelled');
+            console.log('📷 Add Photo tapped');
+            await driver.pause(800);
         } catch {
-            await driver.back();
+            console.log('⚠️ Add Photo button not found');
         }
     }
 
-    // ==== Save Note ====
+    async selectCamera() {
+        try {
+            await this.cameraOption.waitForDisplayed({ timeout: 5000 });
+            await this.cameraOption.click();
+            await HomeScreen.allowCameraPermissionIfPresent();
+            console.log('📷 Camera option selected');
+        } catch {
+            console.log('⚠️ Camera option not found');
+        }
+    }
+
+    async selectGallery() {
+        try {
+            await this.galleryOption.waitForDisplayed({ timeout: 5000 });
+            await this.galleryOption.click();
+            await HomeScreen.allowMediaPermissionIfPresent();
+            console.log('🖼️ Gallery option selected');
+        } catch {
+            console.log('⚠️ Gallery option not found');
+        }
+    }
+
+    // ================================================================
+    // ==== Save / Cancel Note ====
+    // ================================================================
     async tapSaveDone() {
         try {
             await this.saveDoneBtn.waitForDisplayed({ timeout: 5000 });
@@ -203,16 +211,20 @@ class AddNotesScreen {
         }
     }
 
-    // ==== Check Validation Message ====
-    async isValidationMsgVisible() {
+    async tapCancel() {
         try {
-            return await this.validationMsg.isDisplayed();
+            await this.cancelBtn.waitForDisplayed({ timeout: 5000 });
+            await this.cancelBtn.click();
+            console.log('✅ Cancel tapped');
+            await driver.pause(800);
         } catch {
-            return false;
+            await driver.back();
         }
     }
 
+    // ================================================================
     // ==== Back to Home ====
+    // ================================================================
     async backToHome() {
         try {
             await this.backArrow.waitForDisplayed({ timeout: 8000 });

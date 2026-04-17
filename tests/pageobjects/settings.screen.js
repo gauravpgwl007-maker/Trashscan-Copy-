@@ -2,97 +2,59 @@ const HomeScreen = require('./home.screen');
 
 class SettingsScreen {
 
-    // ==== Hamburger Menu (defined in MenuScreen too, duplicated here for convenience) ====
-    get menuButton()          { return $('id=com.gwl.trashscan:id/title_bar_left_menu'); }
-    get menuHome()            { return $('android=new UiSelector().text("Home")'); }
-    get menuProfile()         { return $('android=new UiSelector().text("Profile")'); }
-    get menuActivate()        { return $('android=new UiSelector().text("Activate")'); }
-    get menuPendingViolation(){ return $('android=new UiSelector().text("Pending Violation")'); }
-    get menuLaunchTutorials() { return $('android=new UiSelector().text("Launch Tutorials")'); }
-    get menuReportIssue()     { return $('android=new UiSelector().text("Report Issue")'); }
-    get menuUpdateLocation()  { return $('android=new UiSelector().text("Update Location")'); }
-    get menuChangeLanguage()  { return $('android=new UiSelector().text("Change Language")'); }
-    get menuForceCheckout()   { return $('android=new UiSelector().text("Force Checkout")'); }
-    get menuLogout()          { return $('android=new UiSelector().text("Logout")'); }
-    get menuMessageBroadcast(){ return $('android=new UiSelector().text("Message Broadcast")'); }
+    // ==== Hamburger Menu Button ====
+    get menuButton() { return $('id=com.gwl.trashscan:id/title_bar_left_menu'); }
 
-    // ==== Profile Screen ====
-    get profileNameField()    { return $('id=com.gwl.trashscan:id/profileName'); }
-    get profileEmailField()   { return $('id=com.gwl.trashscan:id/profileEmail'); }
-    get profilePhoneField()   { return $('id=com.gwl.trashscan:id/profilePhone'); }
-    get profileSaveBtn()      { return $('id=com.gwl.trashscan:id/btnSaveProfile'); }
-    get profilePicture()      { return $('id=com.gwl.trashscan:id/profileImage'); }
-    get changePasswordBtn()   { return $('id=com.gwl.trashscan:id/btnChangePassword'); }
-    get currentPasswordField(){ return $('id=com.gwl.trashscan:id/currentPassword'); }
-    get newPasswordField()    { return $('id=com.gwl.trashscan:id/newPassword'); }
-    get confirmPasswordField(){ return $('id=com.gwl.trashscan:id/confirmPassword'); }
-    get updatePasswordBtn()   { return $('id=com.gwl.trashscan:id/btnUpdatePassword'); }
-    get employeeId()          { return $('id=com.gwl.trashscan:id/employeeId'); }
-    get employeeDept()        { return $('id=com.gwl.trashscan:id/employeeDept'); }
+    // ==== Drawer Menu Items (source-verified resource IDs from view_menu_left.xml) ====
+    get menuHome()            { return $('id=com.gwl.trashscan:id/home'); }
+    get menuProfile()         { return $('id=com.gwl.trashscan:id/profile'); }
+    get menuActivate()        { return $('id=com.gwl.trashscan:id/activateLayout'); }
+    get menuPendingViolation(){ return $('id=com.gwl.trashscan:id/rl_pending_violation'); }
+    get menuLaunchTutorials() { return $('id=com.gwl.trashscan:id/play_intro'); }
+    get menuReportIssue()     { return $('id=com.gwl.trashscan:id/report_issue'); }
+    get menuUpdateLocation()  { return $('id=com.gwl.trashscan:id/update_location'); }
+    get menuChangeLanguage()  { return $('id=com.gwl.trashscan:id/change_language'); }
+    get menuForceCheckout()   { return $('id=com.gwl.trashscan:id/rl_force_checkout'); }
+    // Note: source has a typo "boardcast" — must match the actual resource ID
+    get menuMessageBroadcast(){ return $('id=com.gwl.trashscan:id/rl_message_boardcast'); }
+    get menuCustomerSupport() { return $('id=com.gwl.trashscan:id/rl_customerSupport'); }
+    get menuPorterMap()       { return $('id=com.gwl.trashscan:id/porterMap'); }
+    get menuLogout()          { return $('id=com.gwl.trashscan:id/logout'); }
 
-    // ==== Activate (Scanner) Screen ====
-    get activateScannerView() { return $('id=com.gwl.trashscan:id/scannerView'); }
-    get activateFlashBtn()    { return $('id=com.gwl.trashscan:id/flashToggle'); }
-    get activateActivityLogs(){ return $('id=com.gwl.trashscan:id/activityLogsBtn'); }
+    // ==== Profile Screen (source-verified from fragment_profile.xml) ====
+    get profileImage()          { return $('id=com.gwl.trashscan:id/imageViewUsrProfile'); }
+    get profileChangePhotoText(){ return $('id=com.gwl.trashscan:id/textviewChangeImg'); }
+    get profileUsername()       { return $('id=com.gwl.trashscan:id/textUsername'); }
+    get profileEmail()          { return $('id=com.gwl.trashscan:id/textemail'); }
+    get profileMobile()         { return $('id=com.gwl.trashscan:id/textMobileno'); }
+    get profileEditIcon()       { return $('id=com.gwl.trashscan:id/imageview_edit'); }
+    get profileSaveBtn()        { return $('id=com.gwl.trashscan:id/textview_save'); }
+    get changePasswordLayout()  { return $('id=com.gwl.trashscan:id/ll_change_password'); }
+    get changePasswordText()    { return $('id=com.gwl.trashscan:id/textViewChangePassword'); }
 
-    // ==== Pending Violation Screen ====
-    get pendingViolationList()  { return $('id=com.gwl.trashscan:id/pendingViolationRecycler'); }
-    get firstPendingItem()      { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/pendingViolationItem").instance(0)'); }
-    get pendingViolationImage() { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/violationImage").instance(0)'); }
-    get pendingPropertyField()  { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/txt_property")'); }
-    get pendingBuildingField()  { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/txt_building")'); }
-    get pendingBinTagField()    { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/txt_unit")'); }
-    get pendingRuleField()      { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/txt_reason")'); }
-    get pendingActionField()    { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/txt_action")'); }
-    get pendingSubmitBtn()      { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/btnSubmit")'); }
-    get pendingDoneBtn()        { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/doneBtn")'); }
-    get pendingCheckbox()       { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(0)'); }
-    get pendingEmptyState()     { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/emptyStateText")'); }
+    // ==== Pending Violation Screen (from fragment_pending_violation.xml) ====
+    // Custom list dialog IDs (from custom_list_dialog.xml)
+    get customDialogSearch()    { return $('id=com.gwl.trashscan:id/searchEditText'); }
+    get customDialogRecycler()  { return $('id=com.gwl.trashscan:id/recyclerViewLocation'); }
+    get customDialogDoneBtn()   { return $('id=com.gwl.trashscan:id/doneBtn'); }
+    get customDialogCancelBtn() { return $('id=com.gwl.trashscan:id/cancelBtn'); }
+    get customDialogFirstItem() { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(0)'); }
 
-    // ==== Tutorial (Play Intro) Screen ====
-    get tutorialContainer()  { return $('id=com.gwl.trashscan:id/tutorialContainer'); }
-    get tutorialSlide()      { return $('id=com.gwl.trashscan:id/tutorialSlide'); }
-    get tutorialNextBtn()    { return $('id=com.gwl.trashscan:id/btnTutorialNext'); }
-    get tutorialPrevBtn()    { return $('id=com.gwl.trashscan:id/btnTutorialPrev'); }
-
-    // ==== Report Issue Screen ====
-    get reportIssueTitle()     { return $('android=new UiSelector().textContains("Report Issue")'); }
-    get issueCategoryDropdown(){ return $('id=com.gwl.trashscan:id/issueCategoryDropdown'); }
-    get issueCategoryItem()    { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(0)'); }
-    get issueDescriptionField(){ return $('id=com.gwl.trashscan:id/issueDescription'); }
-    get issueAddImageBtn()     { return $('id=com.gwl.trashscan:id/btnAddImage'); }
-    get issueAddVideoBtn()     { return $('id=com.gwl.trashscan:id/btnAddVideo'); }
-    get issueCameraOption()    { return $('id=com.gwl.trashscan:id/txvCamera'); }
-    get issueGalleryOption()   { return $('id=com.gwl.trashscan:id/txvGallery'); }
-    get issueCancelOption()    { return $('id=com.gwl.trashscan:id/txvCancel'); }
-    get issueSubmitBtn()       { return $('id=com.gwl.trashscan:id/btnSubmitIssue'); }
-    get issueSuccessPopup()    { return $('android=new UiSelector().textContains("success")'); }
-    get issueSuccessOkBtn()    { return $('android=new UiSelector().text("OK")'); }
-    get issueDoneCategoryBtn() { return $('id=com.gwl.trashscan:id/doneBtn'); }
-
-    // ==== Update Location Screen ====
-    get mapView()              { return $('id=com.gwl.trashscan:id/mapView'); }
-    get updateLocationBtn()    { return $('id=com.gwl.trashscan:id/btnUpdateLocation'); }
-    get locationSuccessMsg()   { return $('android=new UiSelector().textContains("updated")'); }
-
-    // ==== Change Language Screen ====
-    get languagePopup()        { return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/languageDialog")'); }
-    get languageYesBtn()       { return $('android=new UiSelector().text("Yes")'); }
-    get languageNoBtn()        { return $('android=new UiSelector().text("No")'); }
-
-    // ==== Force Checkout Screen ====
-    get forceCheckoutTitle()   { return $('android=new UiSelector().textContains("Force Checkout")'); }
-    get forcePropertyDropdown(){ return $('id=com.gwl.trashscan:id/forcePropertyDropdown'); }
-    get forcePropertySearch()  { return $('id=com.gwl.trashscan:id/propertySearchInput'); }
-    get forcePropertyCheckbox(){ return $('android=new UiSelector().resourceId("com.gwl.trashscan:id/playerCB").instance(0)'); }
-    get forceDoneBtn()         { return $('id=com.gwl.trashscan:id/doneBtn'); }
-    get forceReasonField()     { return $('id=com.gwl.trashscan:id/forceCheckoutReason'); }
-    get forceSubmitBtn()       { return $('id=com.gwl.trashscan:id/btnForceCheckout'); }
-    get forceBackBtn()         { return $('~Navigate up'); }
+    // ==== Force Checkout (source-verified from fragment_force_property_checkout.xml) ====
+    get forcePropertyDropdown() { return $('id=com.gwl.trashscan:id/tv_select_property'); }
+    get forceReasonField()      { return $('id=com.gwl.trashscan:id/et_description'); }
+    get forceSubmitBtn()        { return $('id=com.gwl.trashscan:id/text_done'); }
 
     // ==== Logout ====
     get logoutConfirmYes() { return $('android=new UiSelector().text("Yes")'); }
     get logoutConfirmNo()  { return $('android=new UiSelector().text("No")'); }
+
+    // ==== Language Dialog ====
+    get languageYesBtn()   { return $('android=new UiSelector().text("Yes")'); }
+    get languageNoBtn()    { return $('android=new UiSelector().text("No")'); }
+
+    // ==== Map View ====
+    get mapView()          { return $('id=com.gwl.trashscan:id/mapView'); }
 
     // ================================================================
     // ==== Menu Navigation Helpers ====
@@ -104,9 +66,10 @@ class SettingsScreen {
             console.log('📂 Drawer opened');
             await driver.pause(800);
         } catch {
+            // Fallback: swipe from left edge to open drawer
             const { width, height } = await driver.getWindowSize();
             await driver.action('pointer')
-                .move({ x: 0, y: height / 2 })
+                .move({ x: 5, y: height / 2 })
                 .down()
                 .move({ x: Math.floor(width * 0.4), y: height / 2 })
                 .up()
@@ -133,17 +96,11 @@ class SettingsScreen {
         await driver.pause(1500);
     }
 
-    async isProfileFieldsVisible() {
-        const name  = await this.profileNameField.isDisplayed().catch(() => false);
-        const email = await this.profileEmailField.isDisplayed().catch(() => false);
-        return name || email;
-    }
-
-    async editProfileField(field, value) {
-        await field.waitForDisplayed({ timeout: 5000 });
-        await field.clearValue();
-        await field.setValue(value);
-        console.log(`✏️ Field updated`);
+    async isProfileVisible() {
+        const image = await this.profileImage.isDisplayed().catch(() => false);
+        const email = await this.profileEmail.isDisplayed().catch(() => false);
+        const username = await this.profileUsername.isDisplayed().catch(() => false);
+        return image || email || username;
     }
 
     async tapSaveProfile() {
@@ -154,6 +111,17 @@ class SettingsScreen {
             await driver.pause(1500);
         } catch {
             console.log('⚠️ Save button not found');
+        }
+    }
+
+    async tapChangePassword() {
+        try {
+            await this.changePasswordLayout.waitForDisplayed({ timeout: 5000 });
+            await this.changePasswordLayout.click();
+            console.log('🔑 Change Password tapped');
+            await driver.pause(1000);
+        } catch {
+            console.log('⚠️ Change Password not found');
         }
     }
 
@@ -169,28 +137,6 @@ class SettingsScreen {
         await HomeScreen.allowCameraPermissionIfPresent();
     }
 
-    async toggleActivateFlash() {
-        try {
-            await this.activateFlashBtn.waitForDisplayed({ timeout: 5000 });
-            await this.activateFlashBtn.click();
-            console.log('💡 Flash toggled in Activate scanner');
-            await driver.pause(500);
-        } catch {
-            console.log('⚠️ Flash button not found in Activate');
-        }
-    }
-
-    async openActivityLogsFromActivate() {
-        try {
-            await this.activateActivityLogs.waitForDisplayed({ timeout: 5000 });
-            await this.activateActivityLogs.click();
-            console.log('📋 Activity logs opened from Activate');
-            await driver.pause(1000);
-        } catch {
-            console.log('⚠️ Activity logs button not found in Activate');
-        }
-    }
-
     // ================================================================
     // ==== Pending Violation Actions ====
     // ================================================================
@@ -202,49 +148,32 @@ class SettingsScreen {
         await driver.pause(1500);
     }
 
-    async openFirstPendingViolation() {
+    // ==== Generic Custom-List Dialog Helpers ====
+    async selectFirstItemInDialog() {
         try {
-            await this.firstPendingItem.waitForDisplayed({ timeout: 5000 });
-            await this.firstPendingItem.click();
-            console.log('📋 First pending violation opened');
-            await driver.pause(1000);
+            await this.customDialogFirstItem.waitForDisplayed({ timeout: 5000 });
+            await this.customDialogFirstItem.click();
+            console.log('✅ First item selected in dialog');
         } catch {
-            console.log('⚠️ No pending violations found');
+            console.log('⚠️ No items found in dialog');
         }
     }
 
-    async fillPendingViolationForm() {
-        const fields = [
-            { field: this.pendingPropertyField, label: 'Property' },
-            { field: this.pendingBuildingField,  label: 'Building' },
-            { field: this.pendingBinTagField,    label: 'Bin Tag' },
-            { field: this.pendingRuleField,      label: 'Rule' },
-            { field: this.pendingActionField,    label: 'Action' },
-        ];
-        for (const { field, label } of fields) {
-            try {
-                await field.waitForDisplayed({ timeout: 5000 });
-                await field.click();
-                await this.pendingCheckbox.waitForDisplayed({ timeout: 5000 });
-                await this.pendingCheckbox.click();
-                await this.pendingDoneBtn.waitForDisplayed({ timeout: 5000 });
-                await this.pendingDoneBtn.click();
-                console.log(`✅ ${label} selected`);
-            } catch {
-                console.log(`⚠️ Could not select ${label}`);
-            }
-        }
+    async tapDialogDone() {
+        await this.customDialogDoneBtn.waitForDisplayed({ timeout: 5000 });
+        await this.customDialogDoneBtn.click();
+        console.log('✅ Dialog Done tapped');
+        await driver.pause(800);
     }
 
-    async submitPendingViolation() {
+    async tapDialogCancel() {
         try {
-            await this.pendingSubmitBtn.waitForDisplayed({ timeout: 5000 });
-            await this.pendingSubmitBtn.click();
-            console.log('✅ Pending violation submitted');
-            await driver.pause(2000);
+            await this.customDialogCancelBtn.waitForDisplayed({ timeout: 5000 });
+            await this.customDialogCancelBtn.click();
         } catch {
-            console.log('⚠️ Submit button not found');
+            await driver.back();
         }
+        await driver.pause(800);
     }
 
     // ================================================================
@@ -266,7 +195,6 @@ class SettingsScreen {
             .move({ x: Math.floor(width * 0.2), y: height / 2 })
             .up()
             .perform();
-        console.log('👈 Swiped left on tutorial');
         await driver.pause(500);
     }
 
@@ -278,7 +206,6 @@ class SettingsScreen {
             .move({ x: Math.floor(width * 0.8), y: height / 2 })
             .up()
             .perform();
-        console.log('👉 Swiped right on tutorial');
         await driver.pause(500);
     }
 
@@ -293,78 +220,6 @@ class SettingsScreen {
         await driver.pause(1500);
     }
 
-    async selectIssueCategory() {
-        try {
-            await this.issueCategoryDropdown.waitForDisplayed({ timeout: 5000 });
-            await this.issueCategoryDropdown.click();
-            await this.issueCategoryItem.waitForDisplayed({ timeout: 5000 });
-            await this.issueCategoryItem.click();
-            await this.issueDoneCategoryBtn.waitForDisplayed({ timeout: 5000 });
-            await this.issueDoneCategoryBtn.click();
-            console.log('✅ Issue category selected');
-        } catch {
-            console.log('⚠️ Category dropdown not found');
-        }
-    }
-
-    async enterIssueDescription(text = 'Automation test issue report') {
-        try {
-            await this.issueDescriptionField.waitForDisplayed({ timeout: 5000 });
-            await this.issueDescriptionField.setValue(text);
-            console.log(`✅ Issue description entered`);
-        } catch {
-            console.log('⚠️ Description field not found');
-        }
-    }
-
-    async tapAddImage() {
-        try {
-            await this.issueAddImageBtn.waitForDisplayed({ timeout: 5000 });
-            await this.issueAddImageBtn.click();
-            await driver.pause(800);
-        } catch {
-            console.log('⚠️ Add Image button not found');
-        }
-    }
-
-    async tapAddVideo() {
-        try {
-            await this.issueAddVideoBtn.waitForDisplayed({ timeout: 5000 });
-            await this.issueAddVideoBtn.click();
-            await driver.pause(800);
-        } catch {
-            console.log('⚠️ Add Video button not found');
-        }
-    }
-
-    async cancelMediaOption() {
-        try {
-            await this.issueCancelOption.waitForDisplayed({ timeout: 5000 });
-            await this.issueCancelOption.click();
-        } catch {
-            await driver.back();
-        }
-    }
-
-    async submitIssueReport() {
-        try {
-            await this.issueSubmitBtn.waitForDisplayed({ timeout: 5000 });
-            await this.issueSubmitBtn.click();
-            console.log('✅ Issue report submitted');
-            await driver.pause(2000);
-        } catch {
-            console.log('⚠️ Submit button not found');
-        }
-    }
-
-    async dismissSuccessPopup() {
-        try {
-            await this.issueSuccessOkBtn.waitForDisplayed({ timeout: 5000 });
-            await this.issueSuccessOkBtn.click();
-            console.log('✅ Success popup dismissed');
-        } catch {}
-    }
-
     // ================================================================
     // ==== Update Location Actions ====
     // ================================================================
@@ -374,17 +229,6 @@ class SettingsScreen {
         await this.menuUpdateLocation.click();
         console.log('📍 Update Location opened');
         await driver.pause(1500);
-    }
-
-    async tapUpdateLocationBtn() {
-        try {
-            await this.updateLocationBtn.waitForDisplayed({ timeout: 5000 });
-            await this.updateLocationBtn.click();
-            console.log('📍 Update Location tapped');
-            await driver.pause(3000);
-        } catch {
-            console.log('⚠️ Update Location button not found');
-        }
     }
 
     // ================================================================
@@ -445,14 +289,12 @@ class SettingsScreen {
     async searchAndSelectForceProperty(term = '') {
         try {
             if (term) {
-                await this.forcePropertySearch.waitForDisplayed({ timeout: 3000 });
-                await this.forcePropertySearch.setValue(term);
+                await this.customDialogSearch.waitForDisplayed({ timeout: 3000 });
+                await this.customDialogSearch.setValue(term);
                 await driver.pause(1000);
             }
-            await this.forcePropertyCheckbox.waitForDisplayed({ timeout: 5000 });
-            await this.forcePropertyCheckbox.click();
-            await this.forceDoneBtn.waitForDisplayed({ timeout: 5000 });
-            await this.forceDoneBtn.click();
+            await this.selectFirstItemInDialog();
+            await this.tapDialogDone();
             console.log('✅ Force Checkout property selected');
         } catch {
             console.log('⚠️ Could not select force checkout property');
@@ -463,7 +305,7 @@ class SettingsScreen {
         try {
             await this.forceReasonField.waitForDisplayed({ timeout: 5000 });
             await this.forceReasonField.setValue(text);
-            console.log(`✅ Force reason entered`);
+            console.log('✅ Force reason entered');
         } catch {
             console.log('⚠️ Force reason field not found');
         }
@@ -482,8 +324,9 @@ class SettingsScreen {
 
     async goBackFromForceCheckout() {
         try {
-            await this.forceBackBtn.waitForDisplayed({ timeout: 5000 });
-            await this.forceBackBtn.click();
+            const back = await $('~Navigate up');
+            await back.waitForDisplayed({ timeout: 5000 });
+            await back.click();
         } catch {
             await driver.back();
         }
@@ -508,7 +351,7 @@ class SettingsScreen {
             console.log('✅ Logout confirmed');
             await driver.pause(3000);
         } catch {
-            console.log('⚠️ Logout confirmation not found — may have logged out already');
+            console.log('⚠️ Logout confirmation not found');
         }
     }
 

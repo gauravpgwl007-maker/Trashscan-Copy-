@@ -20,10 +20,36 @@ exports.config = {
   // Specify Test Files
   // ====================
   specs: [
+    // ── Session start ──────────────────────────────────────────
     './tests/specs/launch.spec.js',
     './tests/specs/login.spec.js',
+
+    // ── Home Screen & Clock ────────────────────────────────────
     './tests/specs/home.spec.js',
-    './tests/specs/logout.spec.js'
+    './tests/specs/clockIn.spec.js',
+
+    // ── Porter Feature Tiles ───────────────────────────────────
+    './tests/specs/workprogress.spec.js',
+    './tests/specs/pickup.spec.js',
+    './tests/specs/activitylogs.spec.js',
+    './tests/specs/addnotes.spec.js',
+    './tests/specs/dailyworkplan.spec.js',
+    './tests/specs/violation.spec.js',
+
+    // ── Settings / Hamburger Menu ──────────────────────────────
+    './tests/specs/menu.spec.js',
+    './tests/specs/settings.spec.js',
+
+    // ── Clock Out & Logout ─────────────────────────────────────
+    './tests/specs/clockout.spec.js',
+    './tests/specs/logout.spec.js',
+
+    // ── Admin Features ─────────────────────────────────────────
+    './tests/specs/adminworkprogress.spec.js',
+
+    // ── Message Broadcast & Notifications ─────────────────────
+    './tests/specs/messagebroadcast.spec.js',
+    './tests/specs/notifications.spec.js',
   ],
   exclude: [],
 
@@ -36,7 +62,7 @@ exports.config = {
     {
       platformName: 'Android',
       'appium:deviceName': 'emulator-5554',
-      'appium:udid': 'emulator-5554',
+      'appium:udid': process.env.DEVICE_NAME || 'emulator-5554',
       'appium:platformVersion': '14',
       'appium:automationName': 'UiAutomator2',
       'appium:appPackage': 'com.gwl.trashscan',
